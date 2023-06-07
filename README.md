@@ -33,9 +33,9 @@ pip install gdal==<version>
 pip install -r requirements.txt
 ```
 
-<br />
-<br />
-<br />
+  
+
+  
 _Below is the original README of [Treepedia_Public](https://github.com/mittrees/Treepedia_Public):_
 # Treepedia
 Developed by the MIT [Senseable City Lab](https://senseable.mit.edu/), *Treepedia* aims to raise a proactive awareness of urban vegetation improvement, using computer vision techniques applied to Google Street View images. Our focus is on street trees: Treepedia doesn't map parks, as GSV doesn't venture into them as it does on average streets.
