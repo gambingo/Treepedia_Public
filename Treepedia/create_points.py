@@ -1,11 +1,27 @@
+# The following film has been modified from its original version. It has been formatted to fit this screen.
+
 # This program is used in the first step of the Treepedia project to get points along street 
 # network to feed into GSV python scripts for metadata generation.
 # Copyright(C) Ian Seiferling, Xiaojiang Li, Marwa Abdulhai, Senseable City Lab, MIT 
 # First version July 21 2017
 
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
-# now run the python file: createPoints.py, the input shapefile has to be in projection of WGS84, 4326
-def createPoints(inshp, outshp, mini_dist):
+import os
+import fiona
+import pyproj
+from functools import partial
+from fiona.crs import from_epsg
+from shapely.ops import transform
+from shapely.geometry import shape, mapping
+from tqdm import tqdm
+
+from directories import STREET_NETWORKS, POINT_GRIDS, format_folder_name
+
+
+# now run the python file: create_points.py, the input shapefile has to be in projection of WGS84, 4326
+def create_points(inshp, outshp, mini_dist):
     
     '''
     This function will parse throigh the street network of provided city and
@@ -20,17 +36,7 @@ def createPoints(inshp, outshp, mini_dist):
 
     last modified by Xiaojiang Li, MIT Senseable City Lab
     
-    '''
-    
-    import fiona
-    import os,os.path
-    from shapely.geometry import shape,mapping
-    from shapely.ops import transform
-    from functools import partial
-    import pyproj
-    from fiona.crs import from_epsg
-    
-    
+    '''    
     count = 0
     s = {'trunk_link','tertiary','motorway','motorway_link','steps', None, ' ','pedestrian','primary', 'primary_link','footway','tertiary_link', 'trunk','secondary','secondary_link','tertiary_link','bridleway','service'}
     
@@ -65,11 +71,11 @@ def createPoints(inshp, outshp, mini_dist):
         'properties': {'id': 'int'},
     }
 
-    # Create pointS along the streets
+    # Create points along the streets
     with fiona.drivers():
         #with fiona.open(outshp, 'w', 'ESRI Shapefile', crs=source.crs, schema) as output:
         with fiona.open(outshp, 'w', crs = from_epsg(4326), driver = 'ESRI Shapefile', schema = schema) as output:
-            for line in fiona.open(temp_cleanedStreetmap):
+            for line in tqdm(fiona.open(temp_cleanedStreetmap)):
                 first = shape(line['geometry'])
                 
                 length = first.length
@@ -98,20 +104,21 @@ def createPoints(inshp, outshp, mini_dist):
     fiona.remove(temp_cleanedStreetmap, 'ESRI Shapefile')
 
 
+def create_points_for_community_area(area_number=1, mini_dist=20):
+    """
+    Generate the points spaced out along the street network.
+    ---
+        mini_dist (int):    The minumum distance between two generated points (meters)
+    """
+    inshp = STREET_NETWORKS / format_folder_name(area_number)
+    outshp = POINT_GRIDS / format_folder_name(area_number)
+    create_points(inshp, outshp, mini_dist)
+
+
 # Example to use the code, 
 # Note: make sure the input linear featureclass (shapefile) is in WGS 84 or ESPG: 4326
 # ------------main ----------
 if __name__ == "__main__":
-    import os, os.path
-    import sys
-
-    from directories import SPATIAL_DATA
-    
-    # root = 'MYPATHH//spatial-data'
-    root = SPATIAL_DATA
-    inshp = os.path.join(root, "chicago_streets.shp")
-    outshp = os.path.join(root, "Chicago20m.shp")
-    mini_dist = 20 #the minimum distance between two generated points in meter
-    createPoints(inshp, outshp, mini_dist)
+    create_points_for_community_area()
 
 

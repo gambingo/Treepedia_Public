@@ -1,7 +1,7 @@
 import osmnx as ox
 import geopandas as gpd
 
-from directories import DATA_DIR, SPATIAL_DATA
+from directories import DATA_DIR, STREET_NETWORKS, format_folder_name
 
 
 def load_community_area_boundaries():
@@ -51,13 +51,15 @@ def download_street_network_for_a_community_area(area_number=1):
     # with google street view images
     assert(graph.graph["crs"] == "epsg:4326")
 
-    # Save to shapefile (what treepedia accepts as input)
-    drctry = SPATIAL_DATA / f"community_area_{area_number}"
+    # Save to shapefile
+    # OSMNX has marked this method and deprecated to move people away from
+    # shapefiles, but shapefiles are what the Treepedia project accepts as
+    # inputs, so we go with it.
+    drctry = STREET_NETWORKS / format_folder_name(area_number)
     drctry.mkdir(parents=True, exist_ok=True)
     ox.save_graph_shapefile(graph, drctry)
 
     return graph
-
 
 
 if __name__ == "__main__":
