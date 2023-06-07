@@ -14,24 +14,24 @@ To break up the processing, we download the drivable street network and parse st
 ### Dependencies
 
 1. Before installing dependencies per `requirements.txt`, you must install GDAL.
-  ```bash
-  brew install gdal
-  ```
+```bash
+brew install gdal
+```
 
-1. Check that it has been installed with
-  ```bash
-  gdal-config --version
-  ```
+1. Check that it has been installed with: 
+```bash
+gdal-config --version
+```
 
-1. Then, you can install gdal with pip but be sure to specify the same version spit out by the previous command.
-  ```bash
-  pip install gdal==<version>
-  ```
+1. Then, you can install gdal with pip, but be sure to specify the same version spit out by the previous command.
+```bash
+pip install gdal==<version>
+```
 
 1. You may then install the rest of the dependencies.
-  ```bash
-  pip install -r requirements.txt
-  ```
+```bash
+pip install -r requirements.txt
+```
 
 <br>
 <br>
