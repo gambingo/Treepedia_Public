@@ -102,12 +102,15 @@ def createPoints(inshp, outshp, mini_dist):
 # Note: make sure the input linear featureclass (shapefile) is in WGS 84 or ESPG: 4326
 # ------------main ----------
 if __name__ == "__main__":
-    import os,os.path
+    import os, os.path
     import sys
+
+    from directories import SPATIAL_DATA
     
-    root = 'MYPATHH//spatial-data'
-    inshp = os.path.join(root,'CambridgeStreet_wgs84.shp')
-    outshp = os.path.join(root,'Cambridge20m.shp')
+    # root = 'MYPATHH//spatial-data'
+    root = SPATIAL_DATA
+    inshp = os.path.join(root, "chicago_streets.shp")
+    outshp = os.path.join(root, "Chicago20m.shp")
     mini_dist = 20 #the minimum distance between two generated points in meter
     createPoints(inshp, outshp, mini_dist)
 

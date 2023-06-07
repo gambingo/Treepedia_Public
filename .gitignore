@@ -1,0 +1,6 @@
+spatial_data/
+.ipynb_checkpoints/
+cache/
+__pycache__/
+data/
+scratchpad.ipynb
