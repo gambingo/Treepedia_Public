@@ -1,13 +1,27 @@
 
 # This function is used to collect the metadata of the GSV panoramas based on the sample point shapefile
-
 # Copyright(C) Xiaojiang Li, Ian Seiferling, Marwa Abdulhai, Senseable City Lab, MIT 
+
+# import urllib
+import numpy as np
+from urllib.request import urlopen
+import xmltodict
+# from io import StringIO
+# import ogr
+# import osr
+from osgeo import ogr, osr
+import time
+import os, os.path
+from tqdm import tqdm
+
+from directories import POINT_GRIDS, PANO_DIR, format_folder_name
+
 
 def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
     '''
     This function is used to call the Google API url to collect the metadata of
     Google Street View Panoramas. The input of the function is the shpfile of the create sample site, the output
-    is the generate panoinfo matrics stored in the text file
+    is the generate panoinfo matrics stored in the text file 
     
     Parameters: 
         samplesFeatureClass: the shapefile of the create sample sites
@@ -15,14 +29,6 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
         ouputTextFolder: the output folder for the panoinfo
         
     '''
-    
-    import urllib,urllib2
-    import xmltodict
-    import cStringIO
-    import ogr, osr
-    import time
-    import os,os.path
-    
     if not os.path.exists(ouputTextFolder):
         os.makedirs(ouputTextFolder)
     
@@ -41,6 +47,7 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
     feature = layer.GetNextFeature()
     featureNum = layer.GetFeatureCount()
     batch = featureNum/num
+    batch = int(np.ceil(batch))
     
     for b in range(batch):
         # for each batch process num GSV site
@@ -60,7 +67,7 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
         
         with open(ouputGSVinfoFile, 'w') as panoInfoText:
             # process num feature each time
-            for i in range(start, end):
+            for i in tqdm(range(start, end)):
                 feature = layer.GetFeature(i)        
                 geom = feature.GetGeometryRef()
                 
@@ -76,7 +83,7 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
                 
                 time.sleep(0.05)
                 # the output result of the meta data is a xml object
-                metaDataxml = urllib2.urlopen(urlAddress)
+                metaDataxml = urlopen(urlAddress)
                 metaData = metaDataxml.read()    
                 
                 data = xmltodict.parse(metaData)
@@ -100,13 +107,14 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
         panoInfoText.close()
 
 
+def metadata_community_area(area_number=1, batch_size=1000):
+    inputShp = POINT_GRIDS / format_folder_name(area_number)
+    inputShp = str(inputShp)
+    outputTxt = PANO_DIR / format_folder_name(area_number)
+    GSVpanoMetadataCollector(inputShp, batch_size, outputTxt)
+
+
 # ------------Main Function -------------------    
 if __name__ == "__main__":
-    import os, os.path
-    
-    root = 'MYPATH/spatial-data'
-    inputShp = os.path.join(root,'Cambridge20m.shp')
-    outputTxt = root
-    
-    GSVpanoMetadataCollector(inputShp,1000,outputTxt)
+    metadata_community_area()
 

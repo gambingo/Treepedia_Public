@@ -7,12 +7,15 @@ DATA_DIR = REPO_ROOT_DIR / "data"
 SPATIAL_DATA = DATA_DIR / "spatial_data"
 STREET_NETWORKS = SPATIAL_DATA / "street_networks"
 POINT_GRIDS = SPATIAL_DATA / "point_grids"
+PANO_DIR = SPATIAL_DATA / "pano_data"
+
 
 # Make directories
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 SPATIAL_DATA.mkdir(parents=True, exist_ok=True)
 STREET_NETWORKS.mkdir(parents=True, exist_ok=True)
 POINT_GRIDS.mkdir(parents=True, exist_ok=True)
+PANO_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def format_folder_name(area_number):

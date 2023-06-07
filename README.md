@@ -2,8 +2,32 @@
 
 The repository began as a fork of [Treepedia_Public](https://github.com/mittrees/Treepedia_Public) from the MIT Senseable City Lab. It's a brilliant approach to measuring street trees and I'm grateful for their work.
 
+### Development
+
 To break up the processing, we download the drive network and parse street view data per Chicago community area, the official boundaries defined by the city. Community Area #1, Rogers Park, is conveniently one of the smaller community areas so it's a good one for testing and development.
 - [Boundaries - Community Areas (current)](https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Community-Areas-current-/cauq-8yn6)
+
+### Dependencies
+
+1. Before installing dependencies per `requirements.txt`, you must install GDAL.
+  ```bash
+  brew install gdal
+  ```
+
+1. Check that it has been installed with
+  ```bash
+  gdal-config --version
+  ```
+
+1. Then, you can install gdal with pip but be sure to specify the same version spit out by the previous command.
+  ```bash
+  pip install gdal==<version>
+  ```
+
+1. You may then install the rest of the dependencies.
+  ```bash
+  pip install -r requirements.txt
+  ```
 
 
 _Below is the original README of [Treepedia_Public](https://github.com/mittrees/Treepedia_Public):_
