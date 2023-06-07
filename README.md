@@ -1,6 +1,10 @@
 # Treepedia (Chicago)
 
-The repository began as a fork of [Treepedia_Public](https://github.com/mittrees/Treepedia_Public) from the MIT Senseable City Lab. It's a brilliant approach to measuring street trees and I'm grateful for their work. The only part of this that is really Chicago-specifc is batching the processing community area. This code begins with multipolygon boundaries of the community areas to download shapefiles of the drivable street network. The rest of the code will work with any shapefile input.
+The repository began as a fork of [Treepedia_Public](https://github.com/mittrees/Treepedia_Public) from the MIT Senseable City Lab. It's a brilliant approach to measuring street trees and I'm grateful for their work. 
+
+### Process
+
+The only change to the process that is really Chicago-specifc is batching the processing by community area. This code begins to downloading shapefiles of the drivable street network within multipolygon boundaries of the each community area. The rest of the code will work with any shapefile input. Other than that, the original project was from 2018, so I have upgarded the code to work with Python 3 and the latest Google APIs.
 
 ### Development
 
@@ -29,7 +33,9 @@ To break up the processing, we download the drivable street network and parse st
   pip install -r requirements.txt
   ```
 
-
+<br>
+<br>
+<br>
 _Below is the original README of [Treepedia_Public](https://github.com/mittrees/Treepedia_Public):_
 # Treepedia
 Developed by the MIT [Senseable City Lab](https://senseable.mit.edu/), *Treepedia* aims to raise a proactive awareness of urban vegetation improvement, using computer vision techniques applied to Google Street View images. Our focus is on street trees: Treepedia doesn't map parks, as GSV doesn't venture into them as it does on average streets.
