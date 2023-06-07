@@ -1,10 +1,10 @@
 # Treepedia (Chicago)
 
-The repository began as a fork of [Treepedia_Public](https://github.com/mittrees/Treepedia_Public) from the MIT Senseable City Lab. It's a brilliant approach to measuring street trees and I'm grateful for their work.
+The repository began as a fork of [Treepedia_Public](https://github.com/mittrees/Treepedia_Public) from the MIT Senseable City Lab. It's a brilliant approach to measuring street trees and I'm grateful for their work. The only part of this that is really Chicago-specifc is batching the processing community area. This code begins with multipolygon boundaries of the community areas to download shapefiles of the drivable street network. The rest of the code will work with any shapefile input.
 
 ### Development
 
-To break up the processing, we download the drive network and parse street view data per Chicago community area, the official boundaries defined by the city. Community Area #1, Rogers Park, is conveniently one of the smaller community areas so it's a good one for testing and development.
+To break up the processing, we download the drivable street network and parse street view data per Chicago Community Area, the official boundaries defined by the city. Community Area #1, Rogers Park, is conveniently one of the smaller community areas so it's a good one for testing and development.
 - [Boundaries - Community Areas (current)](https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Community-Areas-current-/cauq-8yn6)
 
 ### Dependencies
