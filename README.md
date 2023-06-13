@@ -6,12 +6,27 @@ The repository began as a fork of [Treepedia_Public](https://github.com/mittrees
 
 The only change to the process that is really Chicago-specifc is batching the processing by community area. This code begins by downloading shapefiles of the drivable street network within multipolygon boundaries of each community area. The code that follows would still work with any shapefile input. Other than that, since the original project was from 2018, I have upgarded the everything to work with Python 3 and the latest Google APIs.
 
+So far, what I have implemented can be run as follows.
+
+1. Download the street network for an individual community area with:
+  ```bash
+  python treepedia/download_street_network.py
+  ```
+  The current default is Community Area #1, Rogers Park. Edit the file to change the community area. 
+
+1. Tag the steet network with evenly spaced points, from which we will grab...
+  ```bash
+  python treepedia/create_points.py
+  ```
+
+1. Metadata.
+
 ### Development
 
 To break up the processing, we download the drivable street network and parse streetview data by Chicago Community Area, the official boundaries defined by the city. Conveniently, community area #1, Rogers Park, is one of the smaller boundaries so it's a good one for testing and development.
 - [Boundaries - Community Areas (current)](https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Community-Areas-current-/cauq-8yn6)
 
-### Dependencies
+#### Dependencies
 
 1. Before installing dependencies per `requirements.txt`, you must install GDAL.
 ```bash

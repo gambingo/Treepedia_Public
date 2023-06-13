@@ -63,5 +63,5 @@ def download_street_network_for_a_community_area(area_number=1):
 
 
 if __name__ == "__main__":
-    # load_community_area_boundaries()
-    download_street_network_for_a_community_area()
+    area_number = 1
+    download_street_network_for_a_community_area(area_number)
