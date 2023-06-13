@@ -1,4 +1,6 @@
-# This program is used to calculate the green view index based on the collecte metadata. The
+# The following film has been modified from its original version. It has been formatted to fit this screen.
+
+# This program is used to calculate the green view index based on the collected metadata. The
 # Object based images classification algorithm is used to classify the greenery from the GSV imgs
 # in this code, the meanshift algorithm implemented by pymeanshift was used to segment image
 # first, based on the segmented image, we further use the Otsu's method to find threshold from
@@ -11,6 +13,22 @@
 # For more details about the OTSU algorithm and python implmentation
 # cite: http://docs.opencv.org/trunk/doc/py_tutorials/py_imgproc/py_thresholding/py_thresholding.html
 
+import os
+import time
+import itertools
+from PIL import Image
+from io import StringIO
+
+import requests
+import numpy as np
+import pymeanshift as pms
+from dotenv import load_dotenv
+
+from directories import PANO_DIR, GVI_DIR, format_folder_name
+
+load_dotenv()
+
+
 
 # Copyright(C) Xiaojiang Li, Ian Seiferling, Marwa Abdulhai, Senseable City Lab, MIT 
 # First version June 18, 2014
@@ -19,10 +37,7 @@ def graythresh(array,level):
     return thresh: is the result got by OTSU algorithm
     if the threshold is less than level, then set the level as the threshold
     by Xiaojiang Li
-    '''
-    
-    import numpy as np
-    
+    '''    
     maxVal = np.max(array)
     minVal = np.min(array)
     
@@ -88,11 +103,7 @@ def VegetationClassification(Img):
         return the percentage of the green vegetation pixels in the GSV image
     
     By Xiaojiang Li
-    '''
-    
-    import pymeanshift as pms
-    import numpy as np
-    
+    '''    
     # use the meanshift segmentation algorithm to segment the original GSV image
     (segmented_image, labels_image, number_regions) = pms.segment(Img,spatial_radius=6,
                                                      range_radius=7, min_density=40)
@@ -151,7 +162,7 @@ def VegetationClassification(Img):
 
 # using 18 directions is too time consuming, therefore, here I only use 6 horizontal directions
 # Each time the function will read a text, with 1000 records, and save the result as a single TXT
-def GreenViewComputing_ogr_6Horizon(GSVinfoFolder, outTXTRoot, greenmonth, key_file):
+def GreenViewComputing_ogr_6Horizon(GSVinfoFolder, outTXTRoot, greenmonth):
     
     """
     This function is used to download the GSV from the information provide
@@ -166,23 +177,17 @@ def GreenViewComputing_ogr_6Horizon(GSVinfoFolder, outTXTRoot, greenmonth, key_f
         
     last modified by Xiaojiang Li, MIT Senseable City Lab, March 25, 2018
     
-    """
-    
-    import time
-    from PIL import Image
-    import numpy as np
-    import requests
-    from StringIO import StringIO
-    
-    
+    """    
     # read the Google Street View API key files, you can also replace these keys by your own
-    lines = open(key_file,"r")
-    keylist = []
-    for line in lines:
-        key = line[:-1]
-        keylist.append(key)
+    # lines = open(key_file,"r")
+    # keylist = []
+    # for line in lines:
+    #     key = line[:-1]
+    #     keylist.append(key)
     
-    print('The key list is:=============', keylist)
+    # print('The key list is:=============', keylist)
+    api_key = os.environ["GOOGLE_MAPS_API_KEY"]
+    keylist = [api_key]
     
     # set a series of heading angle
     headingArr = 360/6*np.array([0,1,2,3,4,5])
@@ -294,17 +299,16 @@ def GreenViewComputing_ogr_6Horizon(GSVinfoFolder, outTXTRoot, greenmonth, key_f
 
 
 # ------------------------------Main function-------------------------------
-if __name__ == "__main__":
+if __name__ == "__main__": 
+    area_number = 1
+    # GSVinfoRoot = 'MYPATH//spatial-data/metadata'
+    GSVinfoRoot = PANO_DIR / format_folder_name(area_number)
+    # outputTextPath = r'MYPATH//spatial-data/greenViewRes'
+    outputTextPath = GVI_DIR / format_folder_name(area_number)
+    # greenmonth = ['01','02','03','04','05','06','07','08','09','10','11','12']
+    greenmonth = ['05','06','07','08','09']
+    # key_file = 'MYPATH/Treepedia/Treepedia/keys.txt'
     
-    import os,os.path
-    import itertools
-    
-    
-    GSVinfoRoot = 'MYPATH//spatial-data/metadata'
-    outputTextPath = r'MYPATH//spatial-data/greenViewRes'
-    greenmonth = ['01','02','03','04','05','06','07','08','09','10','11','12']
-    key_file = 'MYPATH/Treepedia/Treepedia/keys.txt'
-    
-    GreenViewComputing_ogr_6Horizon(GSVinfoRoot,outputTextPath, greenmonth, key_file)
+    GreenViewComputing_ogr_6Horizon(GSVinfoRoot, outputTextPath, greenmonth)
 
 

@@ -1,3 +1,4 @@
+# The following film has been modified from its original version. It has been formatted to fit this screen.
 
 # This function is used to collect the metadata of the GSV panoramas based on the sample point shapefile
 # Copyright(C) Xiaojiang Li, Ian Seiferling, Marwa Abdulhai, Senseable City Lab, MIT 
@@ -24,7 +25,8 @@ from directories import POINT_GRIDS, PANO_DIR, format_folder_name
 load_dotenv()
 
 
-def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
+def GSVpanoMetadataCollector(samplesFeatureClass, num, ouputTextFolder, 
+                             replace_existing=False):
     '''
     This function is used to call the Google API url to collect the metadata of
     Google Street View Panoramas. The input of the function is the shpfile of the create sample site, the output
@@ -42,7 +44,7 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
     driver = ogr.GetDriverByName('ESRI Shapefile')
     
     # change the projection of shapefile to the WGS84
-    dataset = driver.Open(samplesFeatureClass)
+    dataset = driver.Open(str(samplesFeatureClass))
     layer = dataset.GetLayer()
     
     sourceProj = layer.GetSpatialRef()
@@ -67,8 +69,8 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
         ouputGSVinfoFile = os.path.join(ouputTextFolder,ouputTextFile)
         
         # skip over those existing txt files
-        # if os.path.exists(ouputGSVinfoFile):
-        #     continue
+        if os.path.exists(ouputGSVinfoFile) and replace_existing:
+            continue
         
         time.sleep(1)
         
@@ -111,19 +113,18 @@ def format_metadata_url(lon, lat):
     url = base_url + f"location={lon},{lat}"
     api_key = os.environ["GOOGLE_MAPS_API_KEY"]
     url += f"&key={api_key}"
-    # url += "&output=xml"
-    print(url)
     return url
 
 
-def metadata_community_area(area_number=1, batch_size=1000):
+def metadata_community_area(area_number=1, batch_size=1000, 
+                            replace_existing=False):
     inputShp = POINT_GRIDS / format_folder_name(area_number)
-    inputShp = str(inputShp)
     outputTxt = PANO_DIR / format_folder_name(area_number)
-    GSVpanoMetadataCollector(inputShp, batch_size, outputTxt)
+    GSVpanoMetadataCollector(inputShp, batch_size, outputTxt, 
+                             replace_existing=replace_existing)
 
 
 # ------------Main Function -------------------    
 if __name__ == "__main__":
-    metadata_community_area()
+    metadata_community_area(replace_existing=False)
 

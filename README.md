@@ -48,6 +48,11 @@ pip install gdal==<version>
 pip install -r requirements.txt
 ```
 
+5. Additionally, you will need to manually download and install [pymeanshift](https://github.com/fjean/pymeanshift). To quickly install it within your virtualenv, move the downloaded folder into this directory, `cd` into to, then run `python setup.py install`. Alternatively, if you'd rather store the folder somewhere else, you can still install it within your virtualenv by specifying the python path:
+  ```bash
+  /home/username/virtualpy/bin/python setup.py install
+  ```
+
 ### More Work To DO
 - For the [Google Street View API](https://developers.google.com/maps/documentation/streetview/metadata), I am currently using an API Key but not a digital signature. Let's set one up.
 
