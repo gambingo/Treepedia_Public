@@ -2,6 +2,8 @@
 # This function is used to collect the metadata of the GSV panoramas based on the sample point shapefile
 # Copyright(C) Xiaojiang Li, Ian Seiferling, Marwa Abdulhai, Senseable City Lab, MIT 
 
+import json
+
 # import urllib
 import numpy as np
 from urllib.request import urlopen
@@ -13,8 +15,13 @@ from osgeo import ogr, osr
 import time
 import os, os.path
 from tqdm import tqdm
+from dotenv import load_dotenv
+import requests
 
 from directories import POINT_GRIDS, PANO_DIR, format_folder_name
+
+
+load_dotenv()
 
 
 def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
@@ -60,14 +67,14 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
         ouputGSVinfoFile = os.path.join(ouputTextFolder,ouputTextFile)
         
         # skip over those existing txt files
-        if os.path.exists(ouputGSVinfoFile):
-            continue
+        # if os.path.exists(ouputGSVinfoFile):
+        #     continue
         
         time.sleep(1)
         
         with open(ouputGSVinfoFile, 'w') as panoInfoText:
             # process num feature each time
-            for i in tqdm(range(start, end)):
+            for i in tqdm(range(start, end), desc="Fetching Panorama IDs"):
                 feature = layer.GetFeature(i)        
                 geom = feature.GetGeometryRef()
                 
@@ -76,35 +83,37 @@ def GSVpanoMetadataCollector(samplesFeatureClass,num,ouputTextFolder):
                 geom.Transform(transform)
                 lon = geom.GetX()
                 lat = geom.GetY()
-                key = r'' #Input Your Key here 
                 
                 # get the meta data of panoramas 
-                urlAddress = r'http://maps.google.com/cbk?output=xml&ll=%s,%s'%(lat,lon)
+                urlAddress = format_metadata_url(lon, lat)
+                response = requests.get(urlAddress)
+                data = response.json()
                 
+                # Take a Breath
                 time.sleep(0.05)
-                # the output result of the meta data is a xml object
-                metaDataxml = urlopen(urlAddress)
-                metaData = metaDataxml.read()    
-                
-                data = xmltodict.parse(metaData)
                 
                 # in case there is not panorama in the site, therefore, continue
-                if data['panorama']==None:
+                if data['pano_id']==None:
                     continue
                 else:
-                    panoInfo = data['panorama']['data_properties']
-                                        
-                    # get the meta data of the panorama
-                    panoDate = panoInfo.items()[4][1]
-                    panoId = panoInfo.items()[5][1]
-                    panoLat = panoInfo.items()[8][1]
-                    panoLon = panoInfo.items()[9][1]
-                    
-                    print('The coordinate (%s,%s), panoId is: %s, panoDate is: %s'%(panoLon,panoLat,panoId, panoDate))
+                    panoId = data["pano_id"]
+                    panoDate = data["date"]
+                    panoLat = data["location"]["lat"]
+                    panoLon = data["location"]["lng"]
                     lineTxt = 'panoID: %s panoDate: %s longitude: %s latitude: %s\n'%(panoId, panoDate, panoLon, panoLat)
                     panoInfoText.write(lineTxt)
                     
         panoInfoText.close()
+
+
+def format_metadata_url(lon, lat):
+    base_url = "https://maps.googleapis.com/maps/api/streetview/metadata?"
+    url = base_url + f"location={lon},{lat}"
+    api_key = os.environ["GOOGLE_MAPS_API_KEY"]
+    url += f"&key={api_key}"
+    # url += "&output=xml"
+    print(url)
+    return url
 
 
 def metadata_community_area(area_number=1, batch_size=1000):

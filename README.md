@@ -48,6 +48,10 @@ pip install gdal==<version>
 pip install -r requirements.txt
 ```
 
+### More Work To DO
+- For the [Google Street View API](https://developers.google.com/maps/documentation/streetview/metadata), I am currently using an API Key but not a digital signature. Let's set one up.
+
+
   
 
 # 
