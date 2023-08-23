@@ -13,4 +13,6 @@ st.set_page_config(
 
 st.title(config["page title"])
 lg.write_words("introduction")
+
+st.write("")
 lg.step_one()
