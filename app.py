@@ -14,5 +14,6 @@ st.set_page_config(
 st.title(config["page title"])
 lg.write_words("introduction")
 
-st.write("")
-lg.step_one()
+
+shapefile_dir = lg.download_street_network()
+lg.sample_points(shapefile_dir)
