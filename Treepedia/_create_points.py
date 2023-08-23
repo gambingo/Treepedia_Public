@@ -25,6 +25,8 @@ class Mixin:
         if "point-grids.shp" not in os.listdir(outshp) or recalculate:
             create_point_samples_along_network(inshp, outshp, mini_dist)
 
+        return outshp
+
     
 def create_point_samples_along_network(inshp, outshp, mini_dist):
     '''
