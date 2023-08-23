@@ -99,7 +99,6 @@ def create_points(inshp, outshp, mini_dist):
                     return
                     
     print("Process Complete")
-    
     # delete the temprary cleaned shapefile
     fiona.remove(temp_cleanedStreetmap, 'ESRI Shapefile')
 
@@ -117,7 +116,6 @@ def create_points_for_community_area(area_number=1, mini_dist=20):
 
 # Example to use the code, 
 # Note: make sure the input linear featureclass (shapefile) is in WGS 84 or ESPG: 4326
-# ------------main ----------
 if __name__ == "__main__":
     create_points_for_community_area()
 

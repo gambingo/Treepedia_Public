@@ -6,3 +6,4 @@ data/
 scratchpad.ipynb
 .env
 pymeanshift-master*
+.DS_Store
