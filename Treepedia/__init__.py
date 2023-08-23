@@ -1,6 +1,8 @@
-import Treepedia.metadata_collector 
-import Treepedia.Greenview2Shp
-import Treepedia.GreenView_Calculate
-import Treepedia.create_points
+from . import _create_directories, _create_points
 
-# from .directories import DATA_DIR
+
+class Treepedia(_create_directories.Mixin, 
+                _create_points.Mixin):
+
+    def __init__(self, shapefile_directory):
+        self.create_directories(shapefile_directory)

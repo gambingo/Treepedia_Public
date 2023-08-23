@@ -26,7 +26,8 @@ def select_a_community_area(gdf):
     label = "Select an Official Community Area"
     community_names = gdf["community"].values.tolist()
     options = sorted(community_names)
-    slctn = st.selectbox(label, options)
+    default = options.index("Oakland")
+    slctn = st.selectbox(label, options, index=default)
     return slctn
 
 

@@ -17,14 +17,18 @@ from shapely.ops import transform
 from shapely.geometry import shape, mapping
 from tqdm import tqdm
 
-from directories import STREET_NETWORKS, POINT_GRIDS, format_folder_name
 
+class Mixin:
+    def create_points(self, recalculate=False, mini_dist=20):
+        inshp, outshp = self.shapefile_dir, self.point_grids_dir
 
-# now run the python file: create_points.py, the input shapefile has to be in projection of WGS84, 4326
-def create_points(inshp, outshp, mini_dist):
+        if "point-grids.shp" not in os.listdir(outshp) or recalculate:
+            create_point_samples_along_network(inshp, outshp, mini_dist)
+
     
+def create_point_samples_along_network(inshp, outshp, mini_dist):
     '''
-    This function will parse throigh the street network of provided city and
+    This function will parse through the street network of provided city and
     clean all highways and create points every mini_dist meters (or as specified) along
     the linestrings
     Required modules: Fiona and Shapely
@@ -36,7 +40,7 @@ def create_points(inshp, outshp, mini_dist):
 
     last modified by Xiaojiang Li, MIT Senseable City Lab
     
-    '''    
+    '''
     count = 0
     s = {'trunk_link','tertiary','motorway','motorway_link','steps', None, ' ','pedestrian','primary', 'primary_link','footway','tertiary_link', 'trunk','secondary','secondary_link','tertiary_link','bridleway','service'}
     
@@ -103,20 +107,20 @@ def create_points(inshp, outshp, mini_dist):
     fiona.remove(temp_cleanedStreetmap, 'ESRI Shapefile')
 
 
-def create_points_for_community_area(area_number=1, mini_dist=20):
-    """
-    Generate the points spaced out along the street network.
-    ---
-        mini_dist (int):    The minumum distance between two generated points (meters)
-    """
-    inshp = STREET_NETWORKS / format_folder_name(area_number)
-    outshp = POINT_GRIDS / format_folder_name(area_number)
-    create_points(inshp, outshp, mini_dist)
+# def create_points_for_community_area(area_number=1, mini_dist=20):
+#     """
+#     Generate the points spaced out along the street network.
+#     ---
+#         mini_dist (int):    The minumum distance between two generated points (meters)
+#     """
+#     inshp = STREET_NETWORKS / format_folder_name(area_number)
+#     outshp = POINT_GRIDS / format_folder_name(area_number)
+#     create_points(inshp, outshp, mini_dist)
 
 
 # Example to use the code, 
 # Note: make sure the input linear featureclass (shapefile) is in WGS 84 or ESPG: 4326
-if __name__ == "__main__":
-    create_points_for_community_area()
+# if __name__ == "__main__":
+#     create_points_for_community_area()
 
 
