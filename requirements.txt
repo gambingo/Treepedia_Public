@@ -1,6 +1,6 @@
 pillow == 4.1.1
 numpy == 1.13.0
-matplotlib == 2.0.2
+matplotlib == 3.7.2
 shapely == 1.5.13
 fiona == 1.7.8
 xmltodict == 0.13.0
